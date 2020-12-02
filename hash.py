@@ -7,10 +7,12 @@ class HashTable:
         self.hash_func = hash_func
         self.attribute_func = attribute_func
         self.size = size
-        self.table = [LinkedList() for x in range(size)]
+        self.table = {}
 
     def insert(self, x, key):
         hash = self.hash_func(key)
+        if hash not in self.table:
+            self.table[hash] = LinkedList()
         self.table[hash].insert(x)
 
     def search(self, key):
@@ -32,4 +34,4 @@ hash_table = HashTable(11, hash)
 for name in names:
     hash_table.insert(name, name)
 
-print(name)
+print(hash_table.search('Zoe'))
