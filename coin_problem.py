@@ -2,6 +2,7 @@ import math
 import time
 import random
 
+
 def coin_greedy(n):
     coins = [1, 2, 5, 10, 25][::-1]
 
@@ -13,13 +14,14 @@ def coin_greedy(n):
 
     return res
 
+
 def coin_dynamic(n):
-    
+
     coins = [1, 2, 5, 10, 25]
 
     if n == 0:
         return 0
-    
+
     known_values = [math.inf for idx in range(n+1)]
     known_values[0] = 0
 
@@ -27,8 +29,9 @@ def coin_dynamic(n):
         for i in range(1, n + 1):
             if i >= coin:
                 known_values[i] = min(known_values[i], known_values[i-coin] + 1)
-    
+
     return known_values[-1]
+
 
 amount = random.randint(10**8, 10**9)
 
