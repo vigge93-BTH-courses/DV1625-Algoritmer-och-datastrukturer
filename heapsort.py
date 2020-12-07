@@ -46,10 +46,25 @@ def heap_sort(A):
         A[1], A[i] = A[i], A[1]
         A[0] -= 1
         max_heapify(A, 1)
+    del A[0]
+
+
+def heap_sort_nip(A):
+    """Sort an array A using heapsort (not in place)."""
+    build_max_heap(A)
+    res = []
+    for i in range(len(A) - 1, 1, -1):
+        res.insert(0, A[1])
+        A[1], A[i] = A[i], A[1]
+        del A[i]
+        A[0] -= 1
+        max_heapify(A, 1)
+    A[:] = [A[1]] + res
 
 
 if __name__ == "__main__":
     n = 10
     arr = [random.randint(0, n*10) for x in range(n)]
-    heap_sort(arr)
+    print(arr)
+    heap_sort_nip(arr)
     print(arr)
