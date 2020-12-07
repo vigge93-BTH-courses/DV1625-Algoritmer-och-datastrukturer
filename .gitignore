@@ -2,3 +2,4 @@
 *.json
 *.pyc
 /mypy_cache
+*.pdf

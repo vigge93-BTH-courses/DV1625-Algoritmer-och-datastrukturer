@@ -1,0 +1,38 @@
+"""Mergesort not in place."""
+import math
+
+
+def merge(A, p, q, r):
+    """Split A at q and merge together in order."""
+    n_1 = q-p+1
+    n_2 = r-q
+    L = []
+    R = []
+    for i in range(n_1):
+        L.append(A[p+i])
+    for j in range(n_2):
+        R.append(A[q+j+1])
+    L.append(math.inf)
+    R.append(math.inf)
+    i = 0
+    j = 0
+    for k in range(p, r+1):
+        if L[i] <= R[j]:
+            A[k] = L[i]
+            i += 1
+        else:
+            A[k] = R[j]
+            j += 1
+
+
+def mergesort_notinplace(A):
+    """Sort array elements in A between p and r using mergesort."""
+    if len(A) > 1:
+        p = 0
+        r = len(A)-1
+        q = (p+r)//2
+        left = mergesort_notinplace(A[p:q+1])
+        right = mergesort_notinplace(A[q+1:r+1])
+        A = left + right
+        merge(A, p, q, r)
+    return A
