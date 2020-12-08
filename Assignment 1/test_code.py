@@ -103,11 +103,11 @@ def create_report(sortfunc_list):
     print('Creating individual histogram for sorting algorithms')
     for j, sortfunc in enumerate(sortfunc_names):
 
-        min_time = min(bench_dataframe.loc[j])
-        max_time = max(bench_dataframe.loc[j])
-        avg_time = mean(bench_dataframe.loc[j])
-        med_time = median(bench_dataframe.loc[j])
-        sd_time = stdev(bench_dataframe.loc[j])
+        min_time = min(bench_dataframe[sortfunc])
+        max_time = max(bench_dataframe[sortfunc])
+        avg_time = mean(bench_dataframe[sortfunc])
+        med_time = median(bench_dataframe[sortfunc])
+        sd_time = stdev(bench_dataframe[sortfunc])
         stat_sentence = \
             f'{newline}min=' + '{:0.3e}'.format(min_time) + \
             f'{newline}average=' + '{:0.3e}'.format(avg_time) + \
@@ -166,6 +166,15 @@ def create_report(sortfunc_list):
     )
     boxplot_plot.set_ylabel('Time Duration (Seconds)')
     boxplot_plot.get_figure().savefig(directory+'/boxplot_mixed.pdf')
+
+    # mixed KDE plot without python_sort
+    print("Mixed density (KDE) plot is being created.")
+    bench_dataframe = bench_dataframe.drop(columns='python_sort')
+    mixed_plot = bench_dataframe.plot.kde(
+        title='Mixed Density (KDE) Plot'
+    )
+    mixed_plot.set_xlabel('Time Duration (Seconds)')
+    mixed_plot.get_figure().savefig(directory+'/density_mixed_2.pdf')
 
 
 if __name__ == "__main__":
