@@ -1,8 +1,9 @@
 """Mergesort not in place."""
 import math
+from typing import List
 
 
-def merge(A, p, q, r):
+def merge(A: List[float], p: int, q: int, r: int) -> None:
     """Split A at q and merge together in order."""
     n_1 = q-p+1
     n_2 = r-q
@@ -25,7 +26,7 @@ def merge(A, p, q, r):
             j += 1
 
 
-def mergesort_notinplace(A):
+def mergesort_notinplace(A: List[float]) -> List[float]:
     """Sort array elements in A between p and r using mergesort."""
     if len(A) > 1:
         p = 0

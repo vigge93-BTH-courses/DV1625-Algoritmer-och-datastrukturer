@@ -1,49 +1,50 @@
 """Heapsort algorithms."""
+from typing import List
 
 
-def parent(i):
+def parent(i: int) -> int:
     """Get the index of the parent node."""
     return i // 2
 
 
-def left(i):
+def left(i: int) -> int:
     """Get the index of the left child node."""
     return 2*i
 
 
-def right(i):
+def right(i: int) -> int:
     """Get the index of the right child node."""
     return 2*i + 1
 
 
-def max_heapify(A, i):
+def max_heapify(A: List[float], i: int) -> None:
     """Maintain the max-heap property."""
-    l = left(i)
-    r = right(i)
-    if l <= A[0] and A[l] > A[i]:
-        largest = l
+    L = left(i)
+    R = right(i)
+    if L <= A[0] and A[L] > A[i]:
+        largest = L
     else:
         largest = i
-    if r <= A[0] and A[r] > A[largest]:
-        largest = r
+    if R <= A[0] and A[R] > A[largest]:
+        largest = R
     if largest != i:
         A[i], A[largest] = A[largest], A[i]
         max_heapify(A, largest)
 
 
-def build_max_heap(A):
+def build_max_heap(A: List[float]) -> None:
     """Create a max-heap from an unsorted array."""
     A.insert(0, len(A))
     for i in range(len(A)//2, 0, -1):
         max_heapify(A, i)
 
 
-def heapsort_notinplace(A):
+def heapsort_notinplace(A: List[float]) -> List[float]:
     """Sort an array A using heapsort (not in place)."""
     if not A:
         return A
     build_max_heap(A)
-    res = []
+    res: List[float] = []
     for i in range(len(A) - 1, 1, -1):
         res.insert(0, A[1])
         A[1], A[i] = A[i], A[1]

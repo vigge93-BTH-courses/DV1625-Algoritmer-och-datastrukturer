@@ -28,7 +28,7 @@ def coin_dynamic(n):
     for coin in coins:
         for i in range(1, n + 1):
             if i >= coin:
-                known_values[i] = min(known_values[i], known_values[i-coin] + 1)
+                known_values[i] = min(known_values[i], known_values[i-coin]+1)
 
     return known_values[-1]
 

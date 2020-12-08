@@ -1,7 +1,8 @@
 """Quicksort inplace."""
+from typing import List
 
 
-def quicksort_inplace(A):
+def quicksort_inplace(A: List[float]) -> List[float]:
     """Sort array elements in A between p and r using quicksort."""
     if A:
         q = partition(A, 0, len(A)-1)
@@ -11,7 +12,7 @@ def quicksort_inplace(A):
     return A
 
 
-def partition(A, p, r):
+def partition(A: List[float], p: int, r: int) -> int:
     """Partition array using last element as pivot."""
     x = A[r]
     i = p

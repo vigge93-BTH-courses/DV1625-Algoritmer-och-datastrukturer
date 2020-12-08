@@ -1,7 +1,8 @@
 """Quicksort not in place."""
+from typing import List, Tuple
 
 
-def quicksort_notinplace(A):
+def quicksort_notinplace(A: List[float]) -> List[float]:
     """Sort array using quicksort (not in place)."""
     if len(A) > 1:
         left, right, pivot = partition_nip(A)
@@ -12,7 +13,7 @@ def quicksort_notinplace(A):
     return A
 
 
-def partition_nip(A):
+def partition_nip(A: List[float]) -> Tuple[List[float], List[float], float]:
     """Partition array using last element as pivot (not in place)."""
     x = A[-1]
     left = []
