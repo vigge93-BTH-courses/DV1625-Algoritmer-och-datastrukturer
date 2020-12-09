@@ -1,5 +1,4 @@
 """Mergesort in place."""
-import math
 from typing import List
 
 
@@ -11,12 +10,12 @@ def merge_in_place(A: List[float], p: int, q: int, r: int) -> None:
     R = 0
     for k in range(p, r+1):
         if A[p] <= A[q + 1]:
-            A.insert(r+1, A[p])
+            A[r+1:r+1] = [A[p]]
             del A[p]
             L += 1
             q -= 1
         else:
-            A.insert(r+1, A[q+1])
+            A[r+1:r+1] = [A[q+1]]
             del A[q+1]
             R += 1
 
@@ -36,9 +35,22 @@ def mergesort_inplace(A: List[float]) -> List[float]:
     if len(A) > 1:
         p = 0
         r = len(A)-1
+        A = _mergesort_internal(A, p, r)
+    return A
+
+
+def _mergesort_internal(A: List[float], p: int, r: int):
+    if p < r:
         q = (p+r)//2
-        left = mergesort_inplace(A[p:q+1])
-        right = mergesort_inplace(A[q+1:r+1])
-        A = left + right
+        _mergesort_internal(A, p, q)
+        _mergesort_internal(A, q+1, r)
         merge_in_place(A, p, q, r)
     return A
+
+
+if __name__ == "__main__":
+    import random
+    n = 11
+    arr = [random.randint(0, n*10) for x in range(n)]
+    arr = mergesort_inplace(arr)
+    print(arr)

@@ -1,4 +1,4 @@
-"""Heapsort algorithms."""
+"""Heapsort inplace algorithm."""
 from typing import List
 
 
@@ -34,7 +34,7 @@ def max_heapify(A: List[float], i: int) -> None:
 
 def build_max_heap(A: List[float]) -> None:
     """Create a max-heap from an unsorted array."""
-    A.insert(0, len(A))
+    A.insert(0, len(A))  # Use first index to store heapsize
     for i in range(len(A)//2, 0, -1):
         max_heapify(A, i)
 
@@ -46,5 +46,5 @@ def heapsort_inplace(A: List[float]) -> List[float]:
         A[1], A[i] = A[i], A[1]
         A[0] -= 1
         max_heapify(A, 1)
-    del A[0]
+    del A[0]  # Remove heapsize from sorted list
     return A
