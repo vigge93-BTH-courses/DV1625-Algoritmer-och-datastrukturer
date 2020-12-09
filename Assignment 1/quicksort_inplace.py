@@ -9,7 +9,7 @@ def quicksort_inplace(A: List[float]) -> List[float]:
     return A
 
 
-def _quicksort_internal(A, p, r):
+def _quicksort_internal(A: List[float], p: int, r: int) -> List[float]:
     """Sort array elements in A between p and r using quicksort."""
     if p < r:
         q = partition(A, p, r)
@@ -28,11 +28,3 @@ def partition(A: List[float], p: int, r: int) -> int:
             i += 1
     A[i], A[r] = A[r], A[i]
     return i
-
-
-if __name__ == "__main__":
-    import random
-    n = 11
-    arr = [random.randint(0, n*10) for x in range(n)]
-    arr = quicksort_inplace(arr)
-    print(arr)
