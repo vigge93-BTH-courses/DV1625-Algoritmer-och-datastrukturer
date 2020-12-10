@@ -1,24 +1,26 @@
 # Shahryar Eivazzadeh, December 2020, sei@bth.se
 import sys
-if (sys.version < "3.7"):
-    print("Your Python version is old. It is " +
-          sys.version+" . Upgrade to at least 3.7")
-    exit()
-
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib
 import seaborn as sns
 import os
 import timeit
 from statistics import mean, median, stdev
-
+if (sys.version < "3.7"):
+    print("Your Python version is old. It is " +
+          sys.version+" . Upgrade to at least 3.7")
+    exit()
+sns.reset_orig()
+matplotlib.rc_file_defaults()
 
 # some config
-SPEED_FACTOR = 1
-LIST_SIZE = 5000//SPEED_FACTOR
+SPEED_FACTOR = 10
+LIST_SIZE = 100000//SPEED_FACTOR
 TEST_TIMES = 500//SPEED_FACTOR
-GROW_STEP_SIZE = 30
+GROW_STEP_SIZE = 100*SPEED_FACTOR
+GROW_MAX_SIZE = 1000000//SPEED_FACTOR
 newline = '\n'
 
 
@@ -48,6 +50,7 @@ def fixed_sorting(sortfunc):
     bench_result = []
     rand_low, rand_high, rand_list_size = -1000, 1000, LIST_SIZE
     for i in range(0, TEST_TIMES):
+        print(i)
         rand_list = np.random.randint(
             rand_low, rand_high, size=rand_list_size).tolist()
         wrapped_sort_func = wrapper(sortfunc, rand_list)
@@ -60,13 +63,14 @@ def variable_sorting(sortfunc):
 
     bench_result = []
     rand_low, rand_high = -1000, 1000
-    for i in range(0, LIST_SIZE, GROW_STEP_SIZE):  # 1
+    for i in range(0, GROW_MAX_SIZE, GROW_STEP_SIZE):  # 1
+        print(i)
         rand_list = np.random.randint(rand_low, rand_high, size=i).tolist()
         wrapped_sort_func = wrapper(sortfunc, rand_list)
         the_time = timeit.timeit(wrapped_sort_func, number=1)
         bench_result.append(the_time)
 
-    expanded_result = np.repeat(bench_result, GROW_STEP_SIZE)[:LIST_SIZE]
+    expanded_result = np.repeat(bench_result, GROW_STEP_SIZE)[:GROW_MAX_SIZE]
     return(expanded_result[:].tolist())
 
 
@@ -92,7 +96,7 @@ def create_report(sortfunc_list):
     bench_dataframe = pd.DataFrame()
     variable_dataframe = pd.DataFrame()
     for k, sortfunc in enumerate(sortfunc_list):
-        print(f'{newline}Testing {sortfunc_names[k]} for growing list size, 1 to {LIST_SIZE}')
+        print(f'{newline}Testing {sortfunc_names[k]} for growing list size, 1 to {GROW_MAX_SIZE}')
         variable_dataframe.insert(0, sortfunc_names[k], variable_sorting(sortfunc))
         print(f'{newline}Testing: {sortfunc_names[k]} for fixed list size ({LIST_SIZE})')
         bench_dataframe.insert(0, sortfunc_names[k], fixed_sorting(sortfunc))
@@ -115,25 +119,57 @@ def create_report(sortfunc_list):
             f'{newline}max=' + '{:0.3e}'.format(max_time) + \
             f'{newline}SD=' + '{:0.3e}'.format(sd_time)
         print(
-            f'{newline}For {sortfunc_names[j]}:{newline} {stat_sentence} {newline}')
+            f'{newline}For {sortfunc}:{newline} {stat_sentence} {newline}')
 
         hist_plot = bench_dataframe.hist(
             grid=False,
-            column=sortfunc_names[j],
+            column=sortfunc,
             bins=int(LIST_SIZE/10),
+            histtype='step'
         )
         hist_plot = hist_plot[0]
         for x in hist_plot:
             x.spines['right'].set_visible(False)
             x.spines['top'].set_visible(False)
             x.spines['left'].set_visible(False)
-            x.set_title(
-                f"Time duration for {sortfunc_names[j]}{newline}{stat_sentence}")
+            x.set_title(f"Time duration for {sortfunc}")
+            x.annotate(f'{stat_sentence}', xy=(1, 1),
+                       xytext=(1, 1.5), xycoords=('axes fraction', 'axes fraction'), textcoords='offset points',
+                       horizontalalignment='left', verticalalignment='top', fontsize='x-small', annotation_clip=False
+                       )
             x.set_xlabel("Time Duration (Seconds)", size=12)
             x.set_ylabel("Frequency", size=12)
-
+        
+        plt.axvline(avg_time, color='red', linewidth=1)
+        plt.annotate('avg: {:0.3e}'.format(avg_time), xy=(avg_time, 0.7), xytext=(5, 15),
+                     xycoords=('data', 'axes fraction'), textcoords='offset points',
+                     horizontalalignment='left', verticalalignment='center', rotation='horizontal', fontsize='xx-small',
+                     arrowprops=dict(arrowstyle='-|>', fc='black', shrinkA=0, shrinkB=0,
+                                     connectionstyle='angle,angleA=0,angleB=90,rad=10'),
+                     )
+        plt.axvline(med_time, color='red', linewidth=1)
+        plt.annotate('median: {:0.3e}'.format(med_time), xy=(med_time, 0.8), xytext=(5, 15),
+                     xycoords=('data', 'axes fraction'), textcoords='offset points',
+                     horizontalalignment='left', verticalalignment='center', rotation='horizontal', fontsize='xx-small',
+                     arrowprops=dict(arrowstyle='-|>', fc='black', shrinkA=0, shrinkB=0,
+                                     connectionstyle='angle,angleA=0,angleB=90,rad=10'),
+                     )
+        plt.axvline(min_time, color='red', linewidth=1)
+        plt.annotate('min: {:0.3e}'.format(min_time), xy=(min_time, 0.6), xytext=(5, 15),
+                     xycoords=('data', 'axes fraction'), textcoords='offset points',
+                     horizontalalignment='left', verticalalignment='center', rotation='horizontal', fontsize='xx-small',
+                     arrowprops=dict(arrowstyle='-|>', fc='black', shrinkA=0, shrinkB=0,
+                                     connectionstyle='angle,angleA=0,angleB=90,rad=10'),
+                     )
+        plt.axvline(max_time, color='red', linewidth=1)
+        plt.annotate('max: {:0.3e}'.format(max_time), xy=(max_time, 0.5), xytext=(5, 15),
+                     xycoords=('data', 'axes fraction'), textcoords='offset points',
+                     horizontalalignment='left', verticalalignment='center', rotation='horizontal', fontsize='xx-small',
+                     arrowprops=dict(arrowstyle='-|>', fc='black', shrinkA=0, shrinkB=0,
+                                     connectionstyle='angle,angleA=0,angleB=90,rad=10'),
+                     )
         plt.tight_layout()
-        plt.savefig(directory+'/histogram_'+sortfunc_names[j]+'.pdf')
+        plt.savefig(directory+'/histogram_'+sortfunc+'.pdf')
 
     # mixed grow plot
     print("Mixed grow plot is being created.")
@@ -141,14 +177,14 @@ def create_report(sortfunc_list):
     sns.set_theme(style="white")
     sns.set(style="ticks")  # ,rc={'figure.figsize':(16,8.27)}
     g = sns.lmplot(x='Input Size', y='value', data=grow_melted, hue='variable', legend=False, fit_reg=True,
-                   scatter_kws={"s": 10, "alpha": .5}, line_kws={"lw": 2, "alpha": 0.5})  # legend=False,
+                   scatter_kws={"s": 10, "alpha": .5}, line_kws={"lw": 2, "alpha": 0.5}, ci=None)  # legend=False,
     plt.legend(bbox_to_anchor=(0.65, 1), loc='upper left', borderaxespad=0.)
     plt.title("Time Duration By Growing Input Size", size=16)
     g.set_axis_labels("Input Size", "Time Duration (Seconds)")
     fig = plt.gcf()
-    fig.set_size_inches(18.5, 10.5)
+    fig.set_size_inches(28.5, 10.5)
     plt.tight_layout()
-    plt.savefig(directory+'/grow_mixed.pdf')
+    plt.savefig(directory+'/grow_mixed.jpeg')
 
     # mixed KDE plot
     print("Mixed density (KDE) plot is being created.")
@@ -164,7 +200,9 @@ def create_report(sortfunc_list):
         title='Mixed BoxPlot (no outlier)',
         showfliers=False,
     )
+    plt.xticks(fontsize='xx-small', rotation=90)
     boxplot_plot.set_ylabel('Time Duration (Seconds)')
+    plt.tight_layout()
     boxplot_plot.get_figure().savefig(directory+'/boxplot_mixed.pdf')
 
     # mixed KDE plot without python_sort

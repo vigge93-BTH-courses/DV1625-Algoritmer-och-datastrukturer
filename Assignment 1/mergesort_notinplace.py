@@ -37,3 +37,11 @@ def mergesort_notinplace(A: List[float]) -> List[float]:
         A = left + right
         merge(A, p, q, r)
     return A
+
+
+if __name__ == "__main__":
+    import random
+    n = 100
+    arr = [random.randint(0, n*10) for x in range(n)]
+    arr = mergesort_notinplace(arr)
+    print(arr)
