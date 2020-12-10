@@ -16,10 +16,10 @@ sns.reset_orig()
 matplotlib.rc_file_defaults()
 
 # some config
-SPEED_FACTOR = 10
+SPEED_FACTOR = 1
 LIST_SIZE = 100000//SPEED_FACTOR
 TEST_TIMES = 500//SPEED_FACTOR
-GROW_STEP_SIZE = 100*SPEED_FACTOR
+GROW_STEP_SIZE = 5000*SPEED_FACTOR
 GROW_MAX_SIZE = 1000000//SPEED_FACTOR
 newline = '\n'
 
@@ -101,7 +101,7 @@ def create_report(sortfunc_list):
         print(f'{newline}Testing: {sortfunc_names[k]} for fixed list size ({LIST_SIZE})')
         bench_dataframe.insert(0, sortfunc_names[k], fixed_sorting(sortfunc))
 
-    variable_dataframe.insert(0, 'Input Size', list(range(1, LIST_SIZE+1)))
+    variable_dataframe.insert(0, 'Input Size', list(range(1, GROW_MAX_SIZE+1)))
 
     # Creating individual histogram for sorting algorithms
     print('Creating individual histogram for sorting algorithms')
