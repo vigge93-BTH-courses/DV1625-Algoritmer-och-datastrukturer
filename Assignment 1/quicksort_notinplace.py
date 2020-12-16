@@ -24,3 +24,13 @@ def partition_nip(A: List[float]) -> Tuple[List[float], List[float], float]:
         else:
             right.append(A[j])
     return left, right, x
+
+if __name__ == "__main__":
+    import random, time
+    n = 1000000
+    arr = [random.randint(0, n*10) for x in range(n)]
+    t1 = time.monotonic_ns()
+    arr = quicksort_notinplace(arr)
+    t2 = time.monotonic_ns()
+    print(arr)
+    print((t2-t1)/10**9)

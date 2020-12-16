@@ -184,7 +184,7 @@ def create_report(sortfunc_list):
     fig = plt.gcf()
     fig.set_size_inches(28.5, 10.5)
     plt.tight_layout()
-    plt.savefig(directory+'/grow_mixed.jpeg')
+    plt.savefig(directory+'/grow_mixed.pdf')
 
     # mixed KDE plot
     print("Mixed density (KDE) plot is being created.")
