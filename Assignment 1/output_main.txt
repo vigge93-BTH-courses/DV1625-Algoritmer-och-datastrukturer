@@ -1,0 +1,61 @@
+For python_sort:
+
+min=4.156e-04
+average=4.345e-04
+median=4.236e-04
+max=7.218e-04
+SD=3.555e-05
+
+
+For quicksort_inplace:
+
+min=5.942e-03
+average=7.118e-03
+median=7.040e-03
+max=1.411e-02
+SD=6.904e-04
+
+
+For quicksort_notinplace:
+
+min=7.157e-03
+average=7.976e-03
+median=7.843e-03
+max=1.600e-02
+SD=6.895e-04
+
+
+For mergesort_inplace:
+
+min=3.177e-02
+average=3.350e-02     
+median=3.349e-02      
+max=4.426e-02
+SD=1.416e-03
+
+
+For mergesort_notinplace:
+
+min=1.408e-02
+average=1.501e-02
+median=1.484e-02
+max=2.557e-02
+SD=1.063e-03
+
+
+For heapsort_inplace:
+
+min=2.038e-02
+average=2.259e-02
+median=2.255e-02
+max=3.086e-02
+SD=1.360e-03
+
+
+For heapsort_notinplace:
+
+min=2.036e-02
+average=2.240e-02
+median=2.228e-02
+max=3.315e-02
+SD=1.390e-03

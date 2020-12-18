@@ -17,7 +17,7 @@ if __name__ == "__main__":
         quicksort_notinplace,
         mergesort_inplace,
         mergesort_notinplace,
-        mergesort_notinplace_mt,
+        # mergesort_notinplace_mt,
         heapsort_inplace,
         heapsort_notinplace
     ]
