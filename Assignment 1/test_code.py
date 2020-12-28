@@ -125,8 +125,7 @@ def create_report(sortfunc_list):
         hist_plot = bench_dataframe.hist(
             grid=False,
             column=sortfunc,
-            bins=int(LIST_SIZE/10),
-            histtype='step'
+            bins=int(LIST_SIZE/10)
         )
         hist_plot = hist_plot[0]
         for x in hist_plot:
