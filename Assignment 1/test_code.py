@@ -17,10 +17,10 @@ matplotlib.rc_file_defaults()
 
 # some config
 SPEED_FACTOR = 1
-LIST_SIZE = 100000//SPEED_FACTOR
+LIST_SIZE = 5000//SPEED_FACTOR
 TEST_TIMES = 500//SPEED_FACTOR
-GROW_STEP_SIZE = 5000*SPEED_FACTOR
-GROW_MAX_SIZE = 1000000//SPEED_FACTOR
+GROW_STEP_SIZE = 500
+GROW_MAX_SIZE = 500000//SPEED_FACTOR
 newline = '\n'
 
 
@@ -100,8 +100,9 @@ def create_report(sortfunc_list):
         variable_dataframe.insert(0, sortfunc_names[k], variable_sorting(sortfunc))
         print(f'{newline}Testing: {sortfunc_names[k]} for fixed list size ({LIST_SIZE})')
         bench_dataframe.insert(0, sortfunc_names[k], fixed_sorting(sortfunc))
-
-    variable_dataframe.insert(0, 'Input Size', list(range(1, GROW_MAX_SIZE+1)))
+        variable_dataframe.to_csv(directory+'/variable_data.csv')
+        bench_dataframe.to_csv(directory+'/bench_data.csv')
+    variable_dataframe.insert(0, 'Input Size', list(range(0, GROW_MAX_SIZE)))
 
     # Creating individual histogram for sorting algorithms
     print('Creating individual histogram for sorting algorithms')
@@ -177,7 +178,7 @@ def create_report(sortfunc_list):
     sns.set_theme(style="white")
     sns.set(style="ticks")  # ,rc={'figure.figsize':(16,8.27)}
     g = sns.lmplot(x='Input Size', y='value', data=grow_melted, hue='variable', legend=False, fit_reg=True,
-                   scatter_kws={"s": 10, "alpha": .5}, line_kws={"lw": 2, "alpha": 0.5}, ci=None)  # legend=False,
+                   scatter_kws={"s": 50, "alpha": 1}, line_kws={"lw": 2, "alpha": 1}, ci=None)  # legend=False,
     plt.legend(bbox_to_anchor=(0.65, 1), loc='upper left', borderaxespad=0.)
     plt.title("Time Duration By Growing Input Size", size=16)
     g.set_axis_labels("Input Size", "Time Duration (Seconds)")
