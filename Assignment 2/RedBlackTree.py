@@ -1,24 +1,36 @@
+"""Red and black balanced binary tree module."""
 from enum import Enum, auto
 
 
 class RedBlackTree:
+    """Red and black binary tree."""
 
     def __init__(self):
-        self.root = None
+        """Create empty red and black binary tree."""
+        self.nil = Node(None)
+        self.nil.parent = self.nil
+        self.nil.left = self.nil
+        self.nil.right = self.nil
+        self.nil.color = Color.BLACK
+        self.root = self.nil
 
-    def inorder_tree_walk(self, x):
-        if x is not None:
-            self.inorder_tree_walk(x.left)
-            print(x.key)
-            self.inorder_tree_walk(x.right)
+    def _inorder_tree_walk(self, x):
+        res = []
+        left = []
+        right = []
+        if x is not self.nil:
+            left = self._inorder_tree_walk(x.left)
+            res.append([x.key, x.color.name, x.left.key, x.right.key])
+            right = self._inorder_tree_walk(x.right)
+        return left + res + right
 
-    def left_rotate(self, x):
+    def _left_rotate(self, x):
         y = x.right
         x.right = y.left
-        if y.left is not None:
+        if y.left is not self.nil:
             y.left.parent = x
         y.parent = x.parent
-        if x.parent is None:
+        if x.parent is self.nil:
             self.root = y
         elif x is x.parent.left:
             x.parent.left = y
@@ -27,64 +39,96 @@ class RedBlackTree:
         y.left = x
         x.parent = y
 
-    def right_rotate(self, x):
-        raise NotImplementedError
+    def _right_rotate(self, x):
+        y = x.left
+        x.left = y.right
+        if y.right is not self.nil:
+            y.right.parent = x
+        y.parent = x.parent
+        if x.parent is self.nil:
+            self.root = y
+        elif x is x.parent.right:
+            x.parent.right = y
+        else:
+            x.parent.left = y
+        y.right = x
+        x.parent = y
 
-    def insert(self, z):
-        y = None
+    def insert(self, k):
+        """Insert value into tree."""
+        if self._search_node(k) is not self.nil:
+            return
+        z = Node(k, self.nil)
+        y = self.nil
         x = self.root
-        while x is not None:
+        while x is not self.nil:
             y = x
             if z.key < x.key:
                 x = x.left
             else:
                 x = x.right
         z.parent = y
-        if y is None:
+        if y is self.nil:
             self.root = z
         elif z.key < y.key:
             y.left = z
         else:
             y.right = z
         z.color = Color.RED
-        self.rb_insert_fixup(z)
+        self._insert_fixup(z)
 
-    def rb_insert_fixup(self, z):
+    def _insert_fixup(self, z):
         while z.parent.color is Color.RED:
             if z.parent is z.parent.parent.left:
+                y = z.parent.parent.right
+                if y.color is Color.RED:
+                    z.parent.color = Color.BLACK
+                    y.color = Color.BLACK
+                    z.parent.parent.color = Color.RED
+                    z = z.parent.parent
+                else:
+                    if z is z.parent.right:
+                        z = z.parent
+                        self._left_rotate(z)
+                    z.parent.color = Color.BLACK
+                    z.parent.parent.color = Color.RED
+                    self._right_rotate(z.parent.parent)
+            else:
                 y = z.parent.parent.left
                 if y.color is Color.RED:
                     z.parent.color = Color.BLACK
+                    y.color = Color.BLACK
                     z.parent.parent.color = Color.RED
                     z = z.parent.parent
-                elif z is z.parent.right:
-                    z = z.parent
-                    self.left_rotate(z)
-                z.parent.color = Color.BLACK
-                z.parent.parent.color = Color.RED
-                self.right_rotate(z.parent.parent)
-            else:
-                raise NotImplementedError
+                else:
+                    if z is z.parent.left:
+                        z = z.parent
+                        self._right_rotate(z)
+                    z.parent.color = Color.BLACK
+                    z.parent.parent.color = Color.RED
+                    self._left_rotate(z.parent.parent)
         self.root.color = Color.BLACK
 
-    def rb_transplant(self, u, v):
-        if u.p is None:
+    def _transplant(self, u, v):
+        if u.parent is self.nil:
             self.root = v
         elif u is u.parent.left:
             u.parent.left = v
         else:
             u.parent.right = v
-        v.p = u.p
+        v.parent = u.parent
 
-    def remove(self, z):
+    def remove(self, k):
+        """Remove value from tree."""
+        z = self._search_node(k)
         y = z
         y_orig_color = y.color
-        if z.left is None:
+        if z.left is self.nil:
             x = z.right
-            self.rb_transplant(z, z.right)
-        elif z.right is None:
+            self._transplant(z, z.right)
+        elif z.right is self.nil:
             x = z.left
-            self.rb_transplant(z, z.left)
+            self._transplant(z, z.left)
         else:
             y = self.tree_minimum(z.right)
             y_orig_color = y.color
@@ -92,47 +136,141 @@ class RedBlackTree:
             if y.parent is z:
                 x.parent = y
             else:
-                self.rb_transplant(y, y.right)
+                self._transplant(y, y.right)
                 y.right = z.right
                 y.right.parent = y
-            self.rb_transplant(z, y)
+            self._transplant(z, y)
             y.left = z.left
             y.left.parent = y
             y.color = z.color
         if y_orig_color is Color.BLACK:
-            self.rb_remove_fixup(x)
+            self._remove_fixup(x)
 
-    def rb_remove_fixup(self, x):
+    def tree_minimum(self, x):
+        """Find the minimum value for the descendant of a node."""
+        while x.left is not self.nil:
+            x = x.left
+        return x
+
+    def _remove_fixup(self, x):
         while x is not self.root and x.color is Color.BLACK:
             if x is x.parent.left:
                 w = x.parent.right
                 if w.color is Color.RED:
                     w.color = Color.BLACK
-                    x.p.color = Color.RED
-                    self.left_rotate(x.parent)
+                    x.parent.color = Color.RED
+                    self._left_rotate(x.parent)
                     w = x.parent.right
-                if w.left.color is Color.BLACK and w.right.color is Color.BLACK:
+                if (w.left.color is Color.BLACK
+                        and w.right.color is Color.BLACK):
                     w.color = Color.RED
                     x = x.parent
-                elif w.right.color is Color.BLACK:
-                    w.left.color = Color.BLACK
+                else:
+                    if w.right.color is Color.BLACK:
+                        w.left.color = Color.BLACK
+                        w.color = Color.RED
+                        self._right_rotate(w)
+                        w = x.parent.right
+                    w.color = x.parent.color
+                    x.parent.color = Color.BLACK
+                    w.right.color = Color.BLACK
+                    self._left_rotate(x.parent)
+                    x = self.root
+            else:
+                w = x.parent.left
+                if w.color is Color.RED:
+                    w.color = Color.BLACK
+                    x.parent.color = Color.RED
+                    self._right_rotate(x.parent)
+                    w = x.parent.left
+                if (w.right.color is Color.BLACK
+                        and w.left.color is Color.BLACK):
                     w.color = Color.RED
-                    self.right_rotate(w)
-                    w = x.parent.right
-                w.color = x.parent.Color
-                x
+                    x = x.parent
+                else:
+                    if w.left.color is Color.BLACK:
+                        w.right.color = Color.BLACK
+                        w.color = Color.RED
+                        self._left_rotate(w)
+                        w = x.parent.left
+                    w.color = x.parent.color
+                    x.parent.color = Color.BLACK
+                    w.left.color = Color.BLACK
+                    self._right_rotate(x.parent)
+                    x = self.root
+        x.color = Color.BLACK
+
+    def search(self, k):
+        """Check if tree contains value."""
+        x = self.root
+        while x is not self.nil and k != x.key:
+            if k < x.key:
+                x = x.left
+            else:
+                x = x.right
+        return x is not self.nil
+
+    def _search_node(self, k):
+        x = self.root
+        while x is not self.nil and k != x.key:
+            if k < x.key:
+                x = x.left
+            else:
+                x = x.right
+        return x
+
+    def path(self, k):
+        """Return the path through the tree to the value."""
+        x = self.root
+        if x is self.nil:
+            return []
+        path = [x.key]
+        while x is not self.nil and k != x.key:
+            if k < x.key:
+                x = x.left
+            else:
+                x = x.right
+            path.append(x.key)
+        return path
+
+    def min(self):
+        """Find the minimum value in the tree."""
+        x = self.root
+        k = None
+        while x is not self.nil:
+            k = x.key
+            x = x.left
+        return k
+
+    def max(self):
+        """Find the maximum value in the tree."""
+        x = self.root
+        k = None
+        while x is not self.nil:
+            k = x.key
+            x = x.right
+        return k
+
+    def bfs(self):
+        """Walk through the tree and print each node in order."""
+        x = self.root
+        return self._inorder_tree_walk(x)
 
 
 class Node:
+    """Red and black tree node."""
 
-    def __init__(self, key):
+    def __init__(self, key, nil=None):
+        """Create a red and black tree node with optional nil sentinel."""
         self.key = key
-        self.left = None
-        self.right = None
-        self.parent = None
+        self.left = nil
+        self.right = nil
+        self.parent = nil
         self.color = None
 
 
 class Color(Enum):
+    """Color enum."""
+
     RED = auto()
     BLACK = auto()

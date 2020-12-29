@@ -290,9 +290,9 @@ def test_min_max(the_rbt, base_list):
             print(f'Error: Calculated Max is {the_max}, while it should be {max(base_list)}')
             exit()
     except:
-            log.exception(f'Error: in calculating max value')
-            print(f'Error: in calculating max value')
-            exit()
+        log.exception(f'Error: in calculating max value')
+        print(f'Error: in calculating max value')
+        exit()
 
     return [the_min,the_max]
 
