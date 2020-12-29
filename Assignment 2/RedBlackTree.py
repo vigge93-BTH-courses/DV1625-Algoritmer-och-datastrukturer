@@ -30,7 +30,7 @@ class RedBlackTree:
     def right_rotate(self, x):
         raise NotImplementedError
 
-    def rb_insert(self, z):
+    def insert(self, z):
         y = None
         x = self.root
         while x is not None:
@@ -40,7 +40,7 @@ class RedBlackTree:
             else:
                 x = x.right
         z.parent = y
-        if y == None:
+        if y is None:
             self.root = z
         elif z.key < y.key:
             y.left = z
@@ -75,8 +75,8 @@ class RedBlackTree:
         else:
             u.parent.right = v
         v.p = u.p
-    
-    def rb_delete(self, z):
+
+    def remove(self, z):
         y = z
         y_orig_color = y.color
         if z.left is None:
@@ -100,9 +100,9 @@ class RedBlackTree:
             y.left.parent = y
             y.color = z.color
         if y_orig_color is Color.BLACK:
-            self.rb_delete_fixup(x)
+            self.rb_remove_fixup(x)
 
-    def rb_delete_fixup(self, x):
+    def rb_remove_fixup(self, x):
         while x is not self.root and x.color is Color.BLACK:
             if x is x.parent.left:
                 w = x.parent.right
@@ -119,7 +119,9 @@ class RedBlackTree:
                     w.color = Color.RED
                     self.right_rotate(w)
                     w = x.parent.right
-                w.color 
+                w.color = x.parent.Color
+                x
+
 
 class Node:
 
