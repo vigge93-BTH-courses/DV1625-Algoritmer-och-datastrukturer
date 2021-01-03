@@ -30,7 +30,7 @@ class LinkedList:
         self.head = idx
         self.prev.append(None)
 
-    def delete(self, key, attribute_func: lambda el: el):
+    def delete(self, key, attribute_func=lambda el: el):
         idx = self._search_idx(key, attribute_func)
         if self.prev[idx] is not None:
             self.next[self.prev[idx]] = self.next[idx]

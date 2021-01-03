@@ -436,12 +436,11 @@ def test_redblack_constraints(new_rbt, new_bfs, filename):
         log.info(f'-{tab}Passed testing red parent constraint')
         print(f'-{tab}Passed testing red parent constraint')
 
-
     test_red_parent_constraint()
     test_black_count_constraint()
 
 
-def test_structure ():
+def test_structure():
 
     SAMPLE_SIZE = 300
 

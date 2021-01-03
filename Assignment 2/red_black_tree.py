@@ -1,11 +1,14 @@
 """Red and black balanced binary tree module."""
+from __future__ import annotations
+
 from enum import Enum, auto
+from typing import List, Optional, Union, Any
 
 
 class RedBlackTree:
     """Red and black binary tree."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Create empty red and black binary tree."""
         self.nil = Node(None)
         self.nil.parent = self.nil
@@ -14,7 +17,7 @@ class RedBlackTree:
         self.nil.color = Color.BLACK
         self.root = self.nil
 
-    def _inorder_tree_walk(self, x):
+    def _inorder_tree_walk(self, x: Node) -> List[List[Union[float, str]]]:
         res = []
         left = []
         right = []
@@ -24,7 +27,7 @@ class RedBlackTree:
             right = self._inorder_tree_walk(x.right)
         return left + res + right
 
-    def _left_rotate(self, x):
+    def _left_rotate(self, x: Node) -> None:
         y = x.right
         x.right = y.left
         if y.left is not self.nil:
@@ -39,7 +42,7 @@ class RedBlackTree:
         y.left = x
         x.parent = y
 
-    def _right_rotate(self, x):
+    def _right_rotate(self, x: Node) -> None:
         y = x.left
         x.left = y.right
         if y.right is not self.nil:
@@ -54,7 +57,7 @@ class RedBlackTree:
         y.right = x
         x.parent = y
 
-    def insert(self, k):
+    def insert(self, k: float) -> None:
         """Insert value into tree."""
         if self._search_node(k) is not self.nil:
             return
@@ -77,7 +80,7 @@ class RedBlackTree:
         z.color = Color.RED
         self._insert_fixup(z)
 
-    def _insert_fixup(self, z):
+    def _insert_fixup(self, z: Node) -> None:
         while z.parent.color is Color.RED:
             if z.parent is z.parent.parent.left:
                 y = z.parent.parent.right
@@ -109,7 +112,7 @@ class RedBlackTree:
                     self._left_rotate(z.parent.parent)
         self.root.color = Color.BLACK
 
-    def _transplant(self, u, v):
+    def _transplant(self, u: Node, v: Node) -> None:
         if u.parent is self.nil:
             self.root = v
         elif u is u.parent.left:
@@ -118,7 +121,7 @@ class RedBlackTree:
             u.parent.right = v
         v.parent = u.parent
 
-    def remove(self, k):
+    def remove(self, k: float) -> None:
         """Remove value from tree."""
         z = self._search_node(k)
         y = z
@@ -146,13 +149,13 @@ class RedBlackTree:
         if y_orig_color is Color.BLACK:
             self._remove_fixup(x)
 
-    def tree_minimum(self, x):
+    def tree_minimum(self, x: Node) -> Node:
         """Find the minimum value for the descendant of a node."""
         while x.left is not self.nil:
             x = x.left
         return x
 
-    def _remove_fixup(self, x):
+    def _remove_fixup(self, x: Node) -> None:
         while x is not self.root and x.color is Color.BLACK:
             if x is x.parent.left:
                 w = x.parent.right
@@ -200,7 +203,7 @@ class RedBlackTree:
                     x = self.root
         x.color = Color.BLACK
 
-    def search(self, k):
+    def search(self, k: float) -> bool:
         """Check if tree contains value."""
         x = self.root
         while x is not self.nil and k != x.key:
@@ -210,7 +213,7 @@ class RedBlackTree:
                 x = x.right
         return x is not self.nil
 
-    def _search_node(self, k):
+    def _search_node(self, k: float) -> Node:
         x = self.root
         while x is not self.nil and k != x.key:
             if k < x.key:
@@ -219,7 +222,7 @@ class RedBlackTree:
                 x = x.right
         return x
 
-    def path(self, k):
+    def path(self, k: float) -> List[float]:
         """Return the path through the tree to the value."""
         x = self.root
         if x is self.nil:
@@ -233,7 +236,7 @@ class RedBlackTree:
             path.append(x.key)
         return path
 
-    def min(self):
+    def min(self) -> Optional[float]:
         """Find the minimum value in the tree."""
         x = self.root
         k = None
@@ -242,7 +245,7 @@ class RedBlackTree:
             x = x.left
         return k
 
-    def max(self):
+    def max(self) -> Optional[float]:
         """Find the maximum value in the tree."""
         x = self.root
         k = None
@@ -251,7 +254,7 @@ class RedBlackTree:
             x = x.right
         return k
 
-    def bfs(self):
+    def bfs(self) -> List[List[Union[float, str]]]:
         """Walk through the tree and print each node in order."""
         x = self.root
         return self._inorder_tree_walk(x)
@@ -260,7 +263,7 @@ class RedBlackTree:
 class Node:
     """Red and black tree node."""
 
-    def __init__(self, key, nil=None):
+    def __init__(self, key: float, nil: Node = None):
         """Create a red and black tree node with optional nil sentinel."""
         self.key = key
         self.left = nil
