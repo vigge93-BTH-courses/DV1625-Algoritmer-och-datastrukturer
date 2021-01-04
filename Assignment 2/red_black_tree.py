@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from enum import Enum, auto
-from typing import List, Optional, Union, Any
+from typing import List, Optional, Union
 
 
 class RedBlackTree:
@@ -133,7 +133,7 @@ class RedBlackTree:
             x = z.left
             self._transplant(z, z.left)
         else:
-            y = self.tree_minimum(z.right)
+            y = self._tree_minimum(z.right)
             y_orig_color = y.color
             x = y.right
             if y.parent is z:
@@ -149,7 +149,7 @@ class RedBlackTree:
         if y_orig_color is Color.BLACK:
             self._remove_fixup(x)
 
-    def tree_minimum(self, x: Node) -> Node:
+    def _tree_minimum(self, x: Node) -> Node:
         """Find the minimum value for the descendant of a node."""
         while x.left is not self.nil:
             x = x.left
